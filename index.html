@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>노브랜드 버거 KIOSK</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Sans KR & Black Han Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nbb: {
+                            yellow: '#FFC700',
+                            yellowDark: '#E6B200',
+                            black: '#111111',
+                            dark: '#1C1C1C',
+                            gray: '#F4F4F5',
+                            accent: '#D92525'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                        impact: ['"Black Han Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #0d0d0d;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #222;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFC700;
+            border-radius: 4px;
+        }
+
+        .touch-active:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        .pulse-subtle {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .kiosk-frame {
+            max-width: 500px;
+            height: 940px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .chiikawa-bounce {
+            animation: chiikawaBounce 2s ease-in-out infinite;
+        }
+        @keyframes chiikawaBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.02); }
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-gray-800 flex justify-center items-center min-h-screen p-0 md:p-4">
+
+    <!-- MAIN KIOSK CONTAINER FRAME -->
+    <div id="kioskContainer" class="kiosk-frame w-full bg-white relative flex flex-col overflow-hidden md:rounded-3xl border-0 md:border-8 border-neutral-900 shadow-2xl transition-all duration-300">
+        
+        <!-- ========================================== -->
+        <!-- SCREEN 0: WELCOME COVER SCREEN (EXACT CHIIKAWA POSTER) -->
+        <!-- ========================================== -->
+        <div id="screenWelcome" onclick="playTouchSound(); goToMenuScreen()" class="absolute inset-0 z-30 bg-amber-50 flex flex-col justify-between cursor-pointer select-none transition-opacity duration-300 overflow-y-auto">
+            <!-- Top Banner Header -->
+            <div class="bg-nbb-yellow text-nbb-black px-4 py-2 font-black text-center text-xs tracking-wider flex justify-between items-center shadow-md shrink-0">
+                <span class="flex items-center gap-1"><i class="fa-solid fa-burger"></i> NO BRAND BURGER</span>
+                <span class="text-[11px] bg-nbb-black text-yellow-300 px-2 py-0.5 rounded-full font-black">NBB × 먼작귀 (치이카와)</span>
+            </div>
+
+            <!-- Central Poster Container -->
+            <div class="relative flex-1 flex flex-col justify-between p-3 bg-gradient-to-b from-amber-100 via-yellow-50 to-pink-100 text-gray-900">
+                
+                <!-- Poster Main Title Block -->
+                <div class="text-center pt-1 pb-2">
+                    <div class="inline-flex items-center gap-1.5 bg-white/90 px-3 py-1 rounded-full shadow-sm border border-yellow-300 mb-1">
+                        <span class="font-black text-xs text-nbb-black">No Brand Burger</span>
+                        <span class="text-red-500 font-bold text-xs">×</span>
+                        <span class="font-black text-xs text-pink-600">치이카와 (먼작귀)</span>
+                    </div>
+                    <h1 class="text-2xl font-impact text-nbb-black tracking-wide leading-tight drop-shadow-sm">
+                        작고 귀여운 <span class="text-pink-600 underline decoration-yellow-400">오늘의 한끼!</span>
+                    </h1>
+                    <p class="text-xs font-bold text-gray-700 mt-0.5">버거 먹고, 친구들 만나자! ✨</p>
+                </div>
+
+                <!-- Chiikawa Main Character Visuals Row -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-2.5 border-2 border-yellow-300 shadow-md my-1 flex justify-around items-end">
+                    <!-- Usagi -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-14 h-14 bg-amber-200 border-2 border-yellow-400 rounded-full flex items-center justify-center text-3xl shadow-sm">
+                            🐰
+                        </div>
+                        <span class="text-[10px] font-black text-amber-700 mt-1">우사기</span>
+                        <span class="text-[8px] bg-amber-100 text-amber-800 font-bold px-1.5 rounded mt-0.5">와아! 더블</span>
+                    </div>
+                    <!-- Chiikawa -->
+                    <div class="flex flex-col items-center transform scale-110">
+                        <div class="w-16 h-16 bg-pink-200 border-2 border-pink-400 rounded-full flex items-center justify-center text-4xl shadow-md">
+                            🐻
+                        </div>
+                        <span class="text-[11px] font-black text-pink-600 mt-1">치이카와</span>
+                        <span class="text-[8px] bg-pink-100 text-pink-700 font-bold px-1.5 rounded mt-0.5">두근두근 한끼</span>
+                    </div>
+                    <!-- Hachiware -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-14 h-14 bg-blue-200 border-2 border-blue-400 rounded-full flex items-center justify-center text-3xl shadow-sm">
+                            🐱
+                        </div>
+                        <span class="text-[10px] font-black text-blue-600 mt-1">하치와레</span>
+                        <span class="text-[8px] bg-blue-100 text-blue-700 font-bold px-1.5 rounded mt-0.5">같이 먹자!</span>
+                    </div>
+                </div>
+
+                <!-- 3 Collaboration Set Cards (Matching Poster 1 & 2) -->
+                <div class="grid grid-cols-3 gap-1.5 my-1">
+                    <!-- Card 1: Chiikawa -->
+                    <div class="bg-pink-50 border-2 border-pink-300 rounded-xl p-1.5 flex flex-col justify-between shadow-sm">
+                        <div class="text-center">
+                            <span class="text-[8px] bg-pink-500 text-white font-black px-1 rounded-full">치이카와</span>
+                            <div class="text-[10px] font-black text-pink-700 mt-0.5 leading-tight">두근두근 한끼</div>
+                        </div>
+                        <div class="w-full h-12 my-1 overflow-hidden rounded-lg bg-white flex items-center justify-center">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-[8px] text-gray-600 font-bold text-center leading-tight">
+                            시그니처 버거<br>+ 감자튀김 + 음료
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Hachiware -->
+                    <div class="bg-sky-50 border-2 border-sky-300 rounded-xl p-1.5 flex flex-col justify-between shadow-sm">
+                        <div class="text-center">
+                            <span class="text-[8px] bg-sky-500 text-white font-black px-1 rounded-full">하치와레</span>
+                            <div class="text-[10px] font-black text-sky-700 mt-0.5 leading-tight">같이 먹자!</div>
+                        </div>
+                        <div class="w-full h-12 my-1 overflow-hidden rounded-lg bg-white flex items-center justify-center">
+                            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-[8px] text-gray-600 font-bold text-center leading-tight">
+                            메가바이트 버거<br>+ 감자튀김 + 음료
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Usagi -->
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-1.5 flex flex-col justify-between shadow-sm">
+                        <div class="text-center">
+                            <span class="text-[8px] bg-amber-500 text-white font-black px-1 rounded-full">우사기</span>
+                            <div class="text-[10px] font-black text-amber-800 mt-0.5 leading-tight">와아! 더블</div>
+                        </div>
+                        <div class="w-full h-12 my-1 overflow-hidden rounded-lg bg-white flex items-center justify-center">
+                            <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-[8px] text-gray-600 font-bold text-center leading-tight">
+                            어메이징 더블<br>+ 감자튀김 + 음료
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Promo Banner Box -->
+                <div class="bg-nbb-black text-nbb-yellow p-2 rounded-xl text-center border border-yellow-400 shadow-md my-1">
+                    <div class="text-[10px] font-black flex items-center justify-center gap-1">
+                        🎁 모든 협업 세트에 피규어 1종 & 랜덤 스티커 증정!
+                    </div>
+                </div>
+
+                <!-- Touch Prompt Button -->
+                <div class="mt-1 w-full flex flex-col items-center">
+                    <div class="bg-nbb-yellow text-nbb-black text-sm font-black px-6 py-2.5 rounded-xl shadow-lg pulse-subtle flex items-center justify-center gap-2 border-2 border-nbb-black w-full">
+                        <i class="fa-solid fa-hand-pointer text-base animate-bounce"></i>
+                        <span>화면을 터치하여 주문을 시작하세요!</span>
+                    </div>
+                    <div class="flex gap-2 mt-1.5">
+                        <span class="bg-nbb-black text-white text-[10px] font-bold px-3 py-0.5 rounded-full">한국어</span>
+                        <span class="bg-gray-200 text-gray-700 text-[10px] font-bold px-3 py-0.5 rounded-full">English</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Disclaimer Bar -->
+            <div class="bg-nbb-black text-gray-300 text-center text-xs py-1.5 px-4 font-medium border-t border-neutral-800 shrink-0">
+                버거 10개 이상 단체 주문은 카운터에 문의해 주세요!
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MAIN ORDERING INTERFACE (WITH ALL ORIGINAL TABS + only NBB) -->
+        <!-- ========================================== -->
+        <header class="bg-nbb-black text-white shrink-0 shadow-md relative z-10">
+            <!-- Top Utility Line -->
+            <div class="bg-nbb-yellow text-nbb-black px-3 py-1 flex justify-between items-center text-xs font-bold">
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDiningOption()" id="diningOptionBadge" class="bg-nbb-black text-white px-2 py-0.5 rounded text-[10px] font-black hover:bg-neutral-800">매장 식사</button>
+                    <span class="font-extrabold tracking-wide">NO BRAND BURGER</span>
+                </div>
+                <button onclick="playTouchSound(); resetOrder()" class="hover:underline flex items-center gap-1 text-nbb-black font-extrabold">
+                    <i class="fa-solid fa-rotate-left text-xs"></i> 처음으로
+                </button>
+            </div>
+
+            <!-- Top Promo Banner (NBB 펀치 / NBB 훅 Photo 2 Banner) -->
+            <div class="bg-gradient-to-r from-red-700 via-neutral-900 to-red-800 p-2 text-white border-b border-neutral-800 flex items-center justify-between relative overflow-hidden">
+                <div class="flex items-center gap-2 z-10">
+                    <div class="bg-nbb-yellow text-black font-impact text-xs px-2 py-0.5 rounded shadow">
+                        NBB 펀치 X 훅
+                    </div>
+                    <div>
+                        <div class="text-xs font-black leading-tight text-yellow-300">진한 체다에 할라피뇨 한빵! <span class="text-white font-normal">스모키에 단짠까지!</span></div>
+                    </div>
+                </div>
+                <div class="flex gap-1 shrink-0 z-10 text-xl">
+                    🍔 🔥
+                </div>
+            </div>
+
+            <!-- Category Tabs (Includes ALL original tabs + 'only NBB') -->
+            <nav class="grid grid-cols-4 bg-neutral-900 text-center text-[11px] font-bold border-b border-neutral-800" id="categoryNav">
+                <!-- Injected via JS -->
+            </nav>
+        </header>
+
+        <!-- MENU GRID CONTAINER -->
+        <main class="flex-1 overflow-y-auto p-2.5 bg-neutral-100" id="menuGridContainer">
+            <div class="grid grid-cols-3 gap-2" id="menuGrid">
+                <!-- Injected via JS -->
+            </div>
+        </main>
+
+        <!-- CART & CHECKOUT BOTTOM FOOTER -->
+        <footer class="bg-white border-t border-gray-200 shadow-2xl shrink-0 z-20">
+            <!-- Selected Item Row Header -->
+            <div class="px-3 py-1.5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-gray-700">주문상품</span>
+                    <span id="cartCountBadge" class="bg-nbb-yellow text-nbb-black font-black text-xs px-2 py-0.5 rounded-full">0개</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500">주문금액</span>
+                    <span id="totalPriceDisplay" class="text-sm font-black text-red-600">0 원</span>
+                </div>
+            </div>
+
+            <!-- Cart Items Horizontal List -->
+            <div class="h-16 overflow-x-auto p-2 flex gap-2 no-scrollbar bg-white" id="cartItemList">
+                <div class="w-full flex items-center justify-center text-xs text-gray-400 font-medium">
+                    메뉴를 선택해 주세요!
+                </div>
+            </div>
+
+            <!-- Action Buttons Footer -->
+            <div class="p-1.5 bg-neutral-900 grid grid-cols-4 gap-1 text-white text-xs font-bold">
+                <button onclick="playTouchSound(); alert('영양성분 및 알레르기 유발물질 함유 정보입니다.')" class="bg-neutral-800 hover:bg-neutral-700 py-2.5 rounded text-center border border-neutral-700 text-[10px]">
+                    영양성분/알레르기
+                </button>
+                <button onclick="playTouchSound(); alert('통신사 할인 및 제휴 쿠폰 바코드를 스캔해 주세요.')" class="bg-neutral-800 hover:bg-neutral-700 py-2.5 rounded text-center border border-neutral-700 text-[10px]">
+                    통신사/제휴 쿠폰
+                </button>
+                <button onclick="playTouchSound(); clearCart()" class="bg-neutral-700 hover:bg-neutral-600 py-2.5 rounded text-center text-[10px]">
+                    취소
+                </button>
+                <button id="checkoutBtn" onclick="playTouchSound(); openCheckoutModal()" disabled class="bg-nbb-accent disabled:bg-gray-700 disabled:text-gray-500 text-white font-black py-2.5 rounded text-center text-xs shadow">
+                    결제하기
+                </button>
+            </div>
+        </footer>
+
+        <!-- ========================================== -->
+        <!-- MODAL 1: SET OPTION POPUP (PHOTO 5) -->
+        <!-- ========================================== -->
+        <div id="modalSetChoice" class="hidden absolute inset-0 z-40 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3">
+            <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border-2 border-nbb-black transform transition-all">
+                
+                <!-- Popup Header -->
+                <div class="bg-nbb-black text-white p-3 text-center relative">
+                    <h3 class="text-base font-impact text-nbb-yellow tracking-wide">세트로 드시겠어요?</h3>
+                    <button onclick="playTouchSound(); closeModal('modalSetChoice')" class="absolute top-2.5 right-3 text-gray-400 hover:text-white text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Choice Options Grid (Photo 5 Requirement) -->
+                <div class="p-3 grid grid-cols-2 gap-2.5 bg-gray-50">
+                    <!-- Left: Single Option (단품 선택) -->
+                    <div onclick="playTouchSound(); confirmSingleOption()" class="touch-active bg-white border-2 border-gray-200 hover:border-nbb-yellow rounded-2xl p-3 flex flex-col items-center text-center shadow-sm cursor-pointer transition">
+                        <div class="text-xs font-bold text-gray-600 mb-1">단품 선택</div>
+                        <img id="setChoiceSingleImg" src="" class="w-20 h-20 object-cover rounded-full mb-1 border border-gray-200">
+                        <div id="setChoiceSingleTitle" class="font-bold text-xs text-gray-900 leading-tight">치킨시저샐러드</div>
+                        <div id="setChoiceSinglePrice" class="font-black text-xs text-red-600 mt-1">5,200원</div>
+                    </div>
+
+                    <!-- Right: Combo Set Option (햄버거 + 샐러드 + 제로음료 콤보) -->
+                    <div onclick="playTouchSound(); proceedToBurgerSelection()" class="touch-active bg-amber-50 border-2 border-nbb-yellow rounded-2xl p-3 flex flex-col items-center text-center shadow-md cursor-pointer relative overflow-hidden transition">
+                        <span class="absolute top-0 right-0 bg-nbb-accent text-white font-black text-[8px] px-1.5 py-0.5 rounded-bl-lg">BEST COMBO</span>
+                        <div class="text-xs font-black text-nbb-black mb-0.5">세트 선택</div>
+                        <div class="text-[8px] text-amber-800 font-bold mb-1 bg-amber-200/60 px-1 rounded">햄버거+샐러드+제로음료</div>
+                        <div class="relative w-20 h-20 mb-1 flex items-center justify-center">
+                            <img id="setChoiceComboImg" src="" class="w-16 h-16 object-cover rounded-full border border-yellow-400 shadow">
+                            <span class="absolute bottom-0 right-0 text-base bg-white rounded-full p-0.5 shadow">🥤</span>
+                        </div>
+                        <div id="setChoiceComboTitle" class="font-bold text-xs text-gray-900 leading-tight">치킨시저 콤보 세트</div>
+                        <div id="setChoiceComboPrice" class="font-black text-xs text-red-600 mt-1">6,600원~</div>
+                    </div>
+                </div>
+
+                <div class="p-2.5 bg-gray-100 text-center border-t border-gray-200">
+                    <button onclick="playTouchSound(); closeModal('modalSetChoice')" class="w-full bg-gray-300 text-gray-700 font-bold py-2 rounded-xl text-xs">
+                        취소하기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODAL 2: BURGER SELECTION & CALORIES (PHOTO 6) -->
+        <!-- ========================================== -->
+        <div id="modalBurgerChoice" class="hidden absolute inset-0 z-40 bg-black/80 flex items-center justify-center p-3">
+            <div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90%] border border-gray-300">
+                
+                <!-- Modal Header -->
+                <div class="bg-neutral-900 text-white p-3 flex justify-between items-center shrink-0">
+                    <div>
+                        <span class="text-[9px] bg-nbb-yellow text-black font-bold px-1.5 py-0.5 rounded">세트 구성 1단계</span>
+                        <h3 class="text-xs font-bold mt-0.5">햄버거를 선택하세요 (칼로리 정보)</h3>
+                    </div>
+                    <button onclick="playTouchSound(); closeModal('modalBurgerChoice')" class="text-gray-400 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Burger List with Calories -->
+                <div class="p-2.5 overflow-y-auto space-y-2 flex-1 bg-gray-50" id="burgerListContainer">
+                    <!-- JS Injected Burger Cards -->
+                </div>
+
+                <!-- Extra Topping Checkbox Section -->
+                <div class="p-2.5 bg-white border-t border-gray-200 shrink-0">
+                    <div class="text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-plus text-nbb-yellow"></i> 추가 토핑을 선택하세요
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="flex items-center gap-2 p-1.5 rounded-lg border border-gray-200 bg-gray-50 cursor-pointer">
+                            <input type="checkbox" id="toppingJalapeno" class="rounded text-nbb-yellow focus:ring-0">
+                            <span class="text-[11px]">할라피뇨 추가 (+0원)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-1.5 rounded-lg border border-gray-200 bg-gray-50 cursor-pointer">
+                            <input type="checkbox" id="toppingCheese" class="rounded text-nbb-yellow focus:ring-0">
+                            <span class="text-[11px]">치즈 추가 (+500원)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Footer Nav -->
+                <div class="p-2.5 bg-gray-100 flex gap-2 shrink-0 border-t border-gray-200">
+                    <button onclick="playTouchSound(); openModal('modalSetChoice'); closeModal('modalBurgerChoice');" class="w-1/3 bg-gray-300 font-bold text-xs py-2 rounded-xl text-gray-700">
+                        이전
+                    </button>
+                    <button onclick="playTouchSound(); proceedToDrinkSelection()" class="w-2/3 bg-nbb-yellow font-black text-xs py-2 rounded-xl text-nbb-black shadow">
+                        다음 (음료 선택)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODAL 3: DRINK SELECTION GRID (PHOTO 7) -->
+        <!-- ========================================== -->
+        <div id="modalDrinkChoice" class="hidden absolute inset-0 z-40 bg-black/80 flex items-center justify-center p-3">
+            <div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90%] border border-gray-300">
+                
+                <!-- Modal Header -->
+                <div class="bg-neutral-900 text-white p-3 flex justify-between items-center shrink-0">
+                    <div>
+                        <span class="text-[9px] bg-nbb-yellow text-black font-bold px-1.5 py-0.5 rounded">세트 구성 2단계</span>
+                        <h3 class="text-xs font-bold mt-0.5">음료 교환이 가능합니다</h3>
+                    </div>
+                    <button onclick="playTouchSound(); closeModal('modalDrinkChoice')" class="text-gray-400 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Drink Options Grid (Photo 7 Style) -->
+                <div class="p-2.5 overflow-y-auto flex-1 bg-gray-50">
+                    <div class="grid grid-cols-4 gap-1.5 text-center" id="drinkGridContainer">
+                        <!-- JS Injected Drink List -->
+                    </div>
+                </div>
+
+                <!-- Footer Nav -->
+                <div class="p-2.5 bg-gray-100 flex gap-2 shrink-0 border-t border-gray-200">
+                    <button onclick="playTouchSound(); openModal('modalBurgerChoice'); closeModal('modalDrinkChoice');" class="w-1/3 bg-gray-300 font-bold text-xs py-2 rounded-xl text-gray-700">
+                        이전
+                    </button>
+                    <button onclick="playTouchSound(); confirmComboToCart()" class="w-2/3 bg-red-600 font-black text-xs py-2 text-white rounded-xl shadow">
+                        장바구니 담기 완료
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODAL 4: CHECKOUT & PAYMENT SIMULATOR -->
+        <!-- ========================================== -->
+        <div id="checkoutModal" class="hidden absolute inset-0 z-40 bg-black/80 flex flex-col justify-end">
+            <div class="bg-white rounded-t-3xl h-[85%] flex flex-col overflow-hidden shadow-2xl">
+                
+                <div class="p-3 bg-neutral-900 text-white flex justify-between items-center">
+                    <h3 class="text-sm font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-credit-card text-nbb-yellow"></i> 주문 확인 및 결제
+                    </h3>
+                    <button onclick="playTouchSound(); closeModal('checkoutModal')" class="text-gray-400 hover:text-white text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Order List Review -->
+                <div class="p-3 overflow-y-auto flex-1 divide-y divide-gray-100" id="checkoutOrderSummary">
+                    <!-- JS Injected -->
+                </div>
+
+                <!-- Total Display & Pay Button -->
+                <div class="p-3 bg-gray-50 border-t border-gray-200">
+                    <div class="flex justify-between items-center mb-2.5">
+                        <span class="text-xs font-bold text-gray-600">최종 결제 금액</span>
+                        <span class="text-xl font-black text-red-600" id="checkoutFinalPrice">0 원</span>
+                    </div>
+
+                    <button onclick="playTouchSound(); processPayment()" class="touch-active w-full bg-nbb-yellow text-nbb-black font-black text-base py-3 rounded-2xl shadow-xl flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>신용카드 결제하기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 2: ORDER COMPLETE & RECEIPT -->
+        <!-- ========================================== -->
+        <div id="screenComplete" class="hidden absolute inset-0 z-50 bg-nbb-yellow flex flex-col justify-between p-6 text-center select-none">
+            <div class="pt-6">
+                <div class="w-14 h-14 bg-nbb-black text-nbb-yellow rounded-full flex items-center justify-center text-2xl mx-auto mb-2 shadow-lg">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2 class="text-xl font-black text-nbb-black">주문이 완료되었습니다!</h2>
+                <p class="text-xs text-nbb-black/80 font-bold mt-0.5">상단 모니터에서 주문번호를 확인해 주세요</p>
+            </div>
+
+            <!-- Receipt Card -->
+            <div class="bg-white rounded-3xl p-5 shadow-2xl mx-2 border-2 border-nbb-black text-gray-800 my-auto">
+                <div class="text-[10px] text-gray-400 font-mono mb-1">ORDER NUMBER</div>
+                <div class="text-5xl font-impact text-nbb-black tracking-tight" id="completedOrderNum">#108</div>
+                
+                <div class="border-t border-b border-dashed border-gray-300 py-2.5 my-3 text-xs space-y-1 text-gray-600">
+                    <div class="flex justify-between">
+                        <span>주문 구분:</span>
+                        <span id="completeDiningType" class="font-bold text-gray-900">매장 식사</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>결제 금액:</span>
+                        <span id="completeTotalPrice" class="font-bold text-red-600">0원</span>
+                    </div>
+                </div>
+
+                <p class="text-[10px] text-gray-500">영수증 및 대기표가 하단에서 출력됩니다.</p>
+            </div>
+
+            <div class="pb-2">
+                <button onclick="playTouchSound(); resetOrder()" class="w-full bg-nbb-black text-white font-bold py-3 rounded-2xl shadow-xl text-xs">
+                    확인 (처음으로 돌아가기)
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ===================================================================
+           KIOSK AUDIO FEEDBACK & STATE MANAGEMENT
+           =================================================================== */
+
+        // Web Audio API for interactive touch feedback
+        function playTouchSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch(e) {}
+        }
+
+        const state = {
+            activeCategory: 'recommend',
+            diningOption: '매장 식사',
+            cart: [],
+            selectedSalad: null,
+            selectedBurger: null,
+            selectedDrink: null,
+            orderCounter: 108
+        };
+
+        // Complete Category Navigation Bar Tabs (Photo 2 + requested 'only NBB')
+        const categories = [
+            { id: 'recommend', name: '추천메뉴' },
+            { id: 'only_nbb', name: 'only NBB' },
+            { id: 'meat_burger', name: '미트버거' },
+            { id: 'chicken_shrimp', name: '새우/치킨/카츠/팩' },
+            { id: 'salad', name: '샐러드' },
+            { id: 'side', name: '사이드' },
+            { id: 'drink', name: '음료' },
+            { id: 'kids', name: '키즈추천' }
+        ];
+
+        // Authentic Menu Items Database by Category
+        const menuDatabase = {
+            recommend: [
+                { id: 'chiika_1', name: '치이카와 두근두근 세트', price: 7900, badge: 'NBB X 먼작귀', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '시그니처 버거 + 감튀 + 탄산 + 피규어' },
+                { id: 'chiika_2', name: '하치와레 같이먹자 세트', price: 8200, badge: 'NBB X 먼작귀', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '메가바이트 버거 + 감튀 + 탄산 + 피규어' },
+                { id: 'chiika_3', name: '우사기 와아! 더블 세트', price: 8900, badge: 'NBB X 먼작귀', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '어메이징 더블 버거 + 감튀 + 탄산 + 피규어' },
+                { id: 'rec_1', name: 'NBB 훅 세트', price: 4900, badge: 'BEST', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '스모키 버거 + 감자튀김 + 음료' },
+                { id: 'rec_2', name: 'NBB 펀치 세트', price: 4900, badge: 'NEW', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '할라피뇨 체다 버거 + 세트' },
+                { id: 'rec_3', name: '탐멍멍 팩', price: 11200, badge: 'PACK', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '시그니처 버거 2개 + 사이드 2종 + 음료2' }
+            ],
+            only_nbb: [
+                { id: 's_chicken', name: '치킨시저샐러드', priceSingle: 5200, priceCombo: 6600, badge: 'BEST', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80', desc: '치킨핑거 & 시저드레싱 샐러드' },
+                { id: 's_pork', name: '풀드포크 샐러드', priceSingle: 5200, priceCombo: 6600, badge: 'NEW', img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=300&q=80', desc: '훈연 풀드포크 샐러드' },
+                { id: 's_avocado', name: '아보카도네부샐러드', priceSingle: 5900, priceCombo: 7300, badge: 'NEW', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=300&q=80', desc: '아보카도 풍미 그린 샐러드' },
+                { id: 's_green', name: '그린샐러드', priceSingle: 4000, priceCombo: 5400, badge: '', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80', desc: '신선한 야채 라이트 샐러드' }
+            ],
+            meat_burger: [
+                { id: 'mb_1', name: 'NBB 훅', price: 4900, badge: 'NEW', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '스모키 버거' },
+                { id: 'mb_2', name: 'NBB 펀치', price: 4900, badge: 'NEW', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '할라피뇨 체다 버거' },
+                { id: 'mb_3', name: '어메이징 더블 업', price: 6300, badge: 'BEST', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '더블 패티 더블 치즈' },
+                { id: 'mb_4', name: '모짜치폴레 베이컨', price: 7500, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '모짜렐라 치즈 & 치폴레' },
+                { id: 'mb_5', name: '아보카도 타코', price: 6500, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '아보카도 크림소스' },
+                { id: 'mb_6', name: '스모크 바비큐', price: 6500, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '스모크 BBQSauce' },
+                { id: 'mb_7', name: '미트마니아', price: 6900, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '고기 매니아를 위한 조합' },
+                { id: 'mb_8', name: '트리플베이컨', price: 6800, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '바삭 베이컨 3장' },
+                { id: 'mb_9', name: '메가바이트', price: 5500, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '통 해쉬브라운 수제 버거' },
+                { id: 'mb_10', name: '시그니처', price: 5200, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '대표 NBB 시그니처' },
+                { id: 'mb_11', name: '더블 그릴드 불고기', price: 4900, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '불고기 패티 2장' },
+                { id: 'mb_12', name: '오리지널', price: 4400, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '클래식 수제버거' },
+                { id: 'mb_13', name: '에그 치즈 불고기', price: 4900, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '계란후라이 & 불고기' },
+                { id: 'mb_14', name: '갈릭앤갈릭', price: 4200, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '마늘 후레이크 풍미' },
+                { id: 'mb_15', name: '그릴드불고기', price: 3300, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '달콤한 불고기 소스' },
+                { id: 'mb_16', name: '그릴드 불고기 라이트', price: 2700, badge: 'BEST', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '가볍게 즐기는 불고기' }
+            ],
+            chicken_shrimp: [
+                { id: 'cs_1', name: '통새우 콤보', price: 7400, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '탱글한 통새우 패티' },
+                { id: 'cs_2', name: '오리지널 새우', price: 4900, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '새우버거 단품' },
+                { id: 'cs_3', name: '크런치 치킨', price: 5300, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '바삭한 치킨 패티' },
+                { id: 'cs_4', name: '투머치치킨', price: 4400, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '푸짐한 치킨버거' },
+                { id: 'cs_5', name: '데일리 치킨', price: 3900, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '부드러운 치킨버거' },
+                { id: 'cs_6', name: '바삭콤보 카츠', price: 5900, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '돈카츠 스타일 패티' },
+                { id: 'cs_7', name: '메가세트 치킨카츠', price: 7100, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '치킨 카츠 세트' },
+                { id: 'cs_8', name: '만원의 행복 1', price: 10000, badge: 'BEST', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '버거2 + 사이드 + 음료2' },
+                { id: 'cs_9', name: '만원의 행복 2', price: 10000, badge: 'PICK', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '치킨팩 특별 구성' }
+            ],
+            salad: [
+                { id: 'sal_1', name: '풀드포크 샐러드', price: 5200, badge: 'NEW', img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=300&q=80', desc: '훈연 풀드포크 야채 샐러드' },
+                { id: 'sal_2', name: '아보카도네부샐러드', price: 5900, badge: 'NEW', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=300&q=80', desc: '아보카도 그린 샐러드' },
+                { id: 'sal_3', name: '치킨시저샐러드', price: 5200, badge: 'BEST', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80', desc: '치킨핑거 시저드레싱 샐러드' },
+                { id: 'sal_4', name: '그린샐러드', price: 4000, badge: '', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80', desc: '신선 야채 그린 샐러드' },
+                { id: 'sal_5', name: '그린샐러드 미니', price: 2500, badge: '', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80', desc: '사이드용 미니 샐러드' },
+                { id: 'sal_6', name: '시저드레싱', price: 700, badge: '', img: 'https://images.unsplash.com/photo-1470549638415-0a0755be0619?auto=format&fit=crop&w=300&q=80', desc: '추가 드레싱' },
+                { id: 'sal_7', name: '이탈리안드레싱', price: 700, badge: '', img: 'https://images.unsplash.com/photo-1470549638415-0a0755be0619?auto=format&fit=crop&w=300&q=80', desc: '새콤상큼 이탈리안' },
+                { id: 'sal_8', name: '스위트칠리소스', price: 700, badge: '', img: 'https://images.unsplash.com/photo-1470549638415-0a0755be0619?auto=format&fit=crop&w=300&q=80', desc: '매콤달콤 칠리소스' }
+            ],
+            side: [
+                { id: 'sd_1', name: '슈크림 츄러스', price: 2300, badge: '', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=300&q=80', desc: '달콤한 슈크림 츄러스' },
+                { id: 'sd_2', name: '메이플 고구마', price: 2400, badge: 'NEW', img: 'https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=300&q=80', desc: '메이플 시럽 고구마' },
+                { id: 'sd_3', name: '와플 치킨', price: 6800, badge: '', img: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=300&q=80', desc: '와플 & 치킨 조합' },
+                { id: 'sd_4', name: '레몬 크림 새우', price: 4800, badge: '', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=300&q=80', desc: '상큼한 레몬크림 새우' },
+                { id: 'sd_5', name: '쉐킷프라이', price: 2400, badge: 'BEST', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=300&q=80', desc: '시즈닝 감자튀김' },
+                { id: 'sd_6', name: '크런치 오징어링', price: 2900, badge: '', img: 'https://images.unsplash.com/photo-1625938145744-e380515399b7?auto=format&fit=crop&w=300&q=80', desc: '바삭 오징어링 5조각' },
+                { id: 'sd_7', name: '치즈스틱 (2조각)', price: 2600, badge: '', img: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=300&q=80', desc: '고소한 모짜렐라 치즈스틱' },
+                { id: 'sd_8', name: '감자튀김', price: 2000, badge: '', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=300&q=80', desc: 'NBB 두툼한 감자튀김' }
+            ],
+            drink: [
+                { id: 'dk_1', name: '핫초코', price: 2400, badge: '', img: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=300&q=80', desc: '진한 따뜻한 핫초코' },
+                { id: 'dk_2', name: '레몬에이드', price: 3300, badge: '', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80', desc: '상큼한 레몬에이드' },
+                { id: 'dk_3', name: '아메리카노', price: 2500, badge: '', img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=300&q=80', desc: '원두 원액 아메리카노' },
+                { id: 'dk_4', name: '펩시콜라 M', price: 1900, badge: '', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80', desc: '시원한 펩시콜라' },
+                { id: 'dk_5', name: '사이다 M', price: 1900, badge: '', img: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=300&q=80', desc: '청량한 칠성사이다' },
+                { id: 'dk_6', name: '펩시제로슈가 M', price: 1900, badge: 'ZERO', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80', desc: '칼로리 걱정 없는 제로' },
+                { id: 'dk_7', name: '칠성사이다 제로', price: 1900, badge: 'ZERO', img: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=300&q=80', desc: '제로 사이다' },
+                { id: 'dk_8', name: '탐스제로 파인', price: 1900, badge: 'ZERO', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80', desc: '파인애플향 제로탄산' },
+                { id: 'dk_9', name: '캔 글라 제로', price: 1900, badge: 'ZERO', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80', desc: '브랜드 캔콜라 제로' },
+                { id: 'dk_10', name: '캔 사이다 제로', price: 1900, badge: 'ZERO', img: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=300&q=80', desc: '브랜드 캔사이다 제로' }
+            ],
+            kids: [
+                { id: 'kd_1', name: '그릴드 불고기 라이트', price: 2700, badge: '', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80', desc: '어린이 추천 불고기버거' },
+                { id: 'kd_2', name: '치즈버거', price: 3900, badge: '', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80', desc: '치즈 풍미 버거' },
+                { id: 'kd_3', name: '오리지널 새우', price: 4900, badge: '', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=300&q=80', desc: '부드러운 새우버거' },
+                { id: 'kd_4', name: '치즈 콤보', price: 3000, badge: 'KIDS', img: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=300&q=80', desc: '치즈스틱 + 오렌지주스 키즈세트' }
+            ]
+        };
+
+        // Burger Selections with Calories (Photo 6)
+        const burgerOptions = [
+            { id: 'b_sig', name: 'NBB 시그니처 버거', kcal: '485 kcal', priceDiff: 0, desc: '직화 미트패티와 치즈의 기본 시그니처' },
+            { id: 'b_ama', name: '어메이징 버거', kcal: '652 kcal', priceDiff: 1000, desc: '더블 패티 & 더블 치즈의 압도적 풍미' },
+            { id: 'b_mega', name: '메가바이트 버거', kcal: '580 kcal', priceDiff: 500, desc: '바삭한 해쉬브라운이 통째로!' },
+            { id: 'b_smoky', name: '스모키 바비큐 버거', kcal: '440 kcal', priceDiff: 0, desc: '스모크향 그릴 소스버거' }
+        ];
+
+        // Drink Choices (Photo 7 - Zero drinks included)
+        const drinkOptions = [
+            { id: 'd_pepsi_zero', name: '펩시제로 M', priceDiff: 0, icon: '🥤' },
+            { id: 'd_brand_zero', name: '브랜드콜라 제로', priceDiff: 0, icon: '🥤' },
+            { id: 'd_cider_zero', name: '브랜드사이다 제로', priceDiff: 0, icon: '🥤' },
+            { id: 'd_tams_zero', name: '탐스제로 오렌지', priceDiff: 0, icon: '🥤' },
+            { id: 'd_pepsi', name: '펩시콜라 M', priceDiff: 0, icon: '🥤' },
+            { id: 'd_cider', name: '사이다 M', priceDiff: 0, icon: '🥤' },
+            { id: 'd_lemonade', name: '레몬에이드', priceDiff: 800, icon: '🍹' },
+            { id: 'd_americano', name: '아메리카노(HOT)', priceDiff: 500, icon: '☕' }
+        ];
+
+        /* ===================================================================
+           INITIALIZATION & RENDER FUNCTIONS
+           =================================================================== */
+
+        window.onload = function() {
+            renderCategories();
+            renderMenuGrid();
+            renderCart();
+        };
+
+        function goToMenuScreen() {
+            document.getElementById('screenWelcome').classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                document.getElementById('screenWelcome').classList.add('hidden');
+            }, 300);
+        }
+
+        function resetOrder() {
+            state.cart = [];
+            renderCart();
+            document.getElementById('screenComplete').classList.add('hidden');
+            document.getElementById('screenWelcome').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+        }
+
+        function toggleDiningOption() {
+            playTouchSound();
+            if (state.diningOption === '매장 식사') {
+                state.diningOption = '포장하기';
+            } else {
+                state.diningOption = '매장 식사';
+            }
+            document.getElementById('diningOptionBadge').innerText = state.diningOption;
+            document.getElementById('completeDiningType').innerText = state.diningOption;
+        }
+
+        function renderCategories() {
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = categories.map(cat => `
+                <button onclick="playTouchSound(); switchCategory('${cat.id}')" 
+                        class="py-2.5 px-0.5 transition-all text-[11px] truncate ${state.activeCategory === cat.id ? 'bg-nbb-yellow text-nbb-black font-extrabold border-b-2 border-nbb-black' : 'text-gray-300 hover:text-white'}">
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function switchCategory(catId) {
+            state.activeCategory = catId;
+            renderCategories();
+            renderMenuGrid();
+        }
+
+        function renderMenuGrid() {
+            const grid = document.getElementById('menuGrid');
+            const items = menuDatabase[state.activeCategory] || menuDatabase.recommend;
+
+            // Render 'only NBB' tab special view (Salads + Hamburger Combo)
+            if (state.activeCategory === 'only_nbb') {
+                grid.innerHTML = items.map(item => `
+                    <div onclick="playTouchSound(); selectSaladItem('${item.id}')" class="touch-active bg-white rounded-xl p-2 shadow-sm border border-gray-200 flex flex-col justify-between relative cursor-pointer hover:border-nbb-yellow transition">
+                        ${item.badge ? `<span class="absolute top-1 left-1 z-10 bg-nbb-accent text-white text-[8px] font-black px-1.5 py-0.5 rounded">${item.badge}</span>` : ''}
+                        
+                        <div class="w-full h-20 mb-1 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-xs text-gray-900 leading-tight">${item.name}</h4>
+                            <p class="text-[8px] text-gray-400 mt-0.5 line-clamp-1">${item.desc}</p>
+                        </div>
+
+                        <div class="mt-1.5 pt-1 border-t border-gray-100 flex flex-col gap-0.5">
+                            <div class="text-[9px] text-gray-600 font-bold">단품: <span class="text-black">${item.priceSingle.toLocaleString()}원</span></div>
+                            <div class="text-[9px] text-red-600 font-black">세트: ${item.priceCombo.toLocaleString()}원~</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Top banner button in 'only NBB' for Special Combo
+                grid.insertAdjacentHTML('afterbegin', `
+                    <div onclick="playTouchSound(); selectSaladItem('s_chicken')" class="col-span-3 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 p-2 rounded-xl border-2 border-nbb-black flex items-center justify-between cursor-pointer shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="text-2xl">🥗🍔🥤</div>
+                            <div>
+                                <span class="bg-nbb-black text-nbb-yellow text-[8px] font-bold px-1.5 py-0.5 rounded">only NBB 특가 세트</span>
+                                <div class="font-black text-xs text-nbb-black leading-tight">햄버거 + 샐러드 + 제로음료 콤보</div>
+                                <div class="text-[9px] text-gray-700">신선한 샐러드와 든든한 버거를 한번에!</div>
+                            </div>
+                        </div>
+                        <span class="bg-nbb-black text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow shrink-0">선택하기 &gt;</span>
+                    </div>
+                `);
+                return;
+            }
+
+            // Regular Categories Rendering
+            grid.innerHTML = items.map(item => `
+                <div onclick="playTouchSound(); addRegularItemToCart('${item.id}')" class="touch-active bg-white rounded-xl p-2 shadow-sm border border-gray-200 flex flex-col justify-between relative cursor-pointer hover:border-nbb-yellow transition">
+                    ${item.badge ? `<span class="absolute top-1 left-1 z-10 bg-nbb-accent text-white text-[8px] font-black px-1.5 py-0.5 rounded">${item.badge}</span>` : ''}
+                    
+                    <div class="w-full h-20 mb-1 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-xs text-gray-900 leading-tight">${item.name}</h4>
+                        <p class="text-[8px] text-gray-400 mt-0.5 line-clamp-1">${item.desc}</p>
+                    </div>
+
+                    <div class="mt-1.5 pt-1 border-t border-gray-100 text-right">
+                        <span class="text-xs font-black text-red-600">${item.price.toLocaleString()}원</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addRegularItemToCart(itemId) {
+            const categoryItems = menuDatabase[state.activeCategory] || menuDatabase.recommend;
+            const item = categoryItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            state.cart.push({
+                cartItemId: Date.now().toString(),
+                name: item.name,
+                price: item.price,
+                desc: '기본 구성'
+            });
+            renderCart();
+        }
+
+        /* ===================================================================
+           MODAL 1: SALAD CLICK -> SINGLE VS COMBO CHOICE (PHOTO 5)
+           =================================================================== */
+
+        function selectSaladItem(saladId) {
+            const saladList = menuDatabase.only_nbb;
+            const salad = saladList.find(s => s.id === saladId) || saladList[0];
+            state.selectedSalad = salad;
+
+            document.getElementById('setChoiceSingleImg').src = salad.img;
+            document.getElementById('setChoiceSingleTitle').innerText = salad.name;
+            document.getElementById('setChoiceSinglePrice').innerText = `${salad.priceSingle.toLocaleString()}원`;
+
+            document.getElementById('setChoiceComboImg').src = salad.img;
+            document.getElementById('setChoiceComboTitle').innerText = `${salad.name} 콤보 세트`;
+            document.getElementById('setChoiceComboPrice').innerText = `${salad.priceCombo.toLocaleString()}원~`;
+
+            openModal('modalSetChoice');
+        }
+
+        function confirmSingleOption() {
+            closeModal('modalSetChoice');
+            const item = {
+                cartItemId: Date.now().toString(),
+                name: `${state.selectedSalad.name} (단품)`,
+                price: state.selectedSalad.priceSingle,
+                desc: '단품 구성'
+            };
+            state.cart.push(item);
+            renderCart();
+        }
+
+        /* ===================================================================
+           MODAL 2: BURGER SELECTION WITH CALORIES (PHOTO 6)
+           =================================================================== */
+
+        function proceedToBurgerSelection() {
+            closeModal('modalSetChoice');
+            
+            state.selectedBurger = burgerOptions[0];
+
+            const container = document.getElementById('burgerListContainer');
+            container.innerHTML = burgerOptions.map((burger, idx) => `
+                <div onclick="playTouchSound(); selectBurgerOption(${idx})" id="burgerOpt_${idx}" class="burger-opt-card p-2 rounded-xl border-2 ${idx === 0 ? 'border-nbb-yellow bg-amber-50' : 'border-gray-200 bg-white'} cursor-pointer flex justify-between items-center transition">
+                    <div>
+                        <div class="font-bold text-xs text-gray-900">${burger.name}</div>
+                        <div class="text-[9px] text-gray-500 mt-0.5">${burger.desc}</div>
+                        <div class="text-[9px] font-bold text-amber-700 mt-0.5">🔥 칼로리: ${burger.kcal}</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-red-600">${burger.priceDiff > 0 ? `+${burger.priceDiff.toLocaleString()}원` : '추가금 없음'}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            openModal('modalBurgerChoice');
+        }
+
+        function selectBurgerOption(index) {
+            state.selectedBurger = burgerOptions[index];
+            document.querySelectorAll('.burger-opt-card').forEach((card, idx) => {
+                if (idx === index) {
+                    card.className = 'burger-opt-card p-2 rounded-xl border-2 border-nbb-yellow bg-amber-50 cursor-pointer flex justify-between items-center transition';
+                } else {
+                    card.className = 'burger-opt-card p-2 rounded-xl border-2 border-gray-200 bg-white cursor-pointer flex justify-between items-center transition';
+                }
+            });
+        }
+
+        /* ===================================================================
+           MODAL 3: DRINK SELECTION GRID (PHOTO 7)
+           =================================================================== */
+
+        function proceedToDrinkSelection() {
+            closeModal('modalBurgerChoice');
+
+            state.selectedDrink = drinkOptions[0];
+
+            const container = document.getElementById('drinkGridContainer');
+            container.innerHTML = drinkOptions.map((drink, idx) => `
+                <div onclick="playTouchSound(); selectDrinkOption(${idx})" id="drinkOpt_${idx}" class="drink-opt-card p-1.5 rounded-xl border-2 ${idx === 0 ? 'border-nbb-black bg-neutral-900 text-white' : 'border-gray-200 bg-white text-gray-800'} cursor-pointer flex flex-col items-center justify-between text-center transition">
+                    <div class="text-xl my-0.5">${drink.icon}</div>
+                    <div class="font-bold text-[9px] leading-tight">${drink.name}</div>
+                    <div class="text-[8px] font-semibold mt-0.5 text-red-500">${drink.priceDiff > 0 ? `+${drink.priceDiff}원` : '+0원'}</div>
+                </div>
+            `).join('');
+
+            openModal('modalDrinkChoice');
+        }
+
+        function selectDrinkOption(index) {
+            state.selectedDrink = drinkOptions[index];
+            document.querySelectorAll('.drink-opt-card').forEach((card, idx) => {
+                if (idx === index) {
+                    card.className = 'drink-opt-card p-1.5 rounded-xl border-2 border-nbb-black bg-neutral-900 text-white cursor-pointer flex flex-col items-center justify-between text-center transition';
+                } else {
+                    card.className = 'drink-opt-card p-1.5 rounded-xl border-2 border-gray-200 bg-white text-gray-800 cursor-pointer flex flex-col items-center justify-between text-center transition';
+                }
+            });
+        }
+
+        function confirmComboToCart() {
+            closeModal('modalDrinkChoice');
+
+            const hasCheese = document.getElementById('toppingCheese').checked;
+            const toppingCost = hasCheese ? 500 : 0;
+
+            const totalComboPrice = state.selectedSalad.priceCombo 
+                                  + state.selectedBurger.priceDiff 
+                                  + state.selectedDrink.priceDiff 
+                                  + toppingCost;
+
+            const item = {
+                cartItemId: Date.now().toString(),
+                name: `${state.selectedSalad.name} 세트`,
+                price: totalComboPrice,
+                desc: `${state.selectedBurger.name} / ${state.selectedDrink.name}`
+            };
+
+            state.cart.push(item);
+            renderCart();
+        }
+
+        /* ===================================================================
+           CART & CHECKOUT HELPERS
+           =================================================================== */
+
+        function renderCart() {
+            const list = document.getElementById('cartItemList');
+            const totalDisplay = document.getElementById('totalPriceDisplay');
+            const countBadge = document.getElementById('cartCountBadge');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            const totalPrice = state.cart.reduce((sum, item) => sum + item.price, 0);
+
+            countBadge.innerText = `${state.cart.length}개`;
+            totalDisplay.innerText = `${totalPrice.toLocaleString()} 원`;
+            checkoutBtn.disabled = state.cart.length === 0;
+
+            if (state.cart.length === 0) {
+                list.innerHTML = `<div class="w-full flex items-center justify-center text-xs text-gray-400 font-medium">메뉴를 선택해 주세요!</div>`;
+                return;
+            }
+
+            list.innerHTML = state.cart.map(item => `
+                <div class="shrink-0 bg-gray-50 rounded-xl p-2 border border-gray-200 flex items-center gap-2 min-w-[150px] relative">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-xs truncate text-gray-800">${item.name}</div>
+                        <div class="text-[9px] text-gray-500 truncate">${item.desc}</div>
+                        <div class="text-xs font-bold text-red-600 mt-0.5">${item.price.toLocaleString()}원</div>
+                    </div>
+                    <button onclick="playTouchSound(); removeFromCart('${item.cartItemId}')" class="text-gray-400 hover:text-red-500 p-1 text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeFromCart(cartItemId) {
+            state.cart = state.cart.filter(i => i.cartItemId !== cartItemId);
+            renderCart();
+        }
+
+        function clearCart() {
+            state.cart = [];
+            renderCart();
+        }
+
+        function openCheckoutModal() {
+            if (state.cart.length === 0) return;
+            const summary = document.getElementById('checkoutOrderSummary');
+            const totalPrice = state.cart.reduce((sum, item) => sum + item.price, 0);
+
+            summary.innerHTML = state.cart.map(item => `
+                <div class="py-2 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-xs text-gray-900">${item.name}</div>
+                        <div class="text-[10px] text-gray-500 mt-0.5">${item.desc}</div>
+                    </div>
+                    <div class="font-bold text-xs text-red-600">${item.price.toLocaleString()}원</div>
+                </div>
+            `).join('');
+
+            document.getElementById('checkoutFinalPrice').innerText = `${totalPrice.toLocaleString()} 원`;
+            openModal('checkoutModal');
+        }
+
+        function processPayment() {
+            closeModal('checkoutModal');
+            state.orderCounter++;
+            const totalPrice = state.cart.reduce((sum, item) => sum + item.price, 0);
+
+            document.getElementById('completedOrderNum').innerText = `#${state.orderCounter}`;
+            document.getElementById('completeTotalPrice').innerText = `${totalPrice.toLocaleString()}원`;
+
+            state.cart = [];
+            renderCart();
+
+            document.getElementById('screenComplete').classList.remove('hidden');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
